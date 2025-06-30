@@ -32,10 +32,18 @@ To boot on a real Raspberry Pi 3 Model B:
 
 ## ⚠️ Note on Firmware Files
 
-- **`bootcode.bin`** and **`start.elf`** are proprietary firmware files provided by the Raspberry Pi Foundation.
-- These files are **not included in this repository** due to licensing restrictions.
-- You must obtain them yourself from the official firmware repository:
+**`bootcode.bin`** and **`start.elf`** are proprietary firmware files provided by the Raspberry Pi Foundation.  
+These files are **not included in this repository** due to licensing restrictions.  
+You must obtain them yourself from the official firmware repository:
 
-👉 https://github.com/raspberrypi/firmware/tree/master/boot
+  👉 https://github.com/raspberrypi/firmware/tree/master/boot
 
 ---
+
+## 📚 References
+
+- [BCM2835 ARM Peripherals – Broadcom (PDF)](https://datasheets.raspberrypi.com/bcm2835/bcm2835-peripherals.pdf)  
+  (Used for UART, GPIO, ARM Timer, and Interrupt Controller implementation)
+
+---
+
