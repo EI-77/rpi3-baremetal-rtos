@@ -54,6 +54,7 @@ void uart_putc(char c) {
 
 // Transmit a null-terminated string over UART
 void uart_puts(const char* s) {
-    while (*s) 
+    while (*s) {
         uart_putc(*s++);
+    }
 }
