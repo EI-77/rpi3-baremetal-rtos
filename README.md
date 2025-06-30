@@ -1,6 +1,6 @@
 # Raspberry Pi 3 Baremetal RTOS
 
-This repository contains a full-scratch bare-metal RTOS project for **Raspberry Pi 3 Model B v1.2**, written in C and ARM32 assembly (AArch32).
+This repository contains a bare-metal RTOS built from scratch for **Raspberry Pi 3 Model B v1.2**, written in C and ARM assembly for AArch32.
 
 ## ✅ Step 1: UART
 - Implements UART (PL011) output
