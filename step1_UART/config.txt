@@ -1,4 +1,4 @@
 arm_64bit=0
-kernel=kernel.img
+kernel=kernel7.img
 enable_uart=1
 device_tree=

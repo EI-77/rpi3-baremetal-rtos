@@ -11,9 +11,9 @@ OBJS := $(CSRCS:.c=.o)
 
 .PHONY: all clean
 
-all: kernel.img
+all: kernel7.img
 
-kernel.img: kernel.elf
+kernel7.img: kernel.elf
 	$(OBJCOPY) -O binary $< $@
 
 kernel.elf: start.o $(OBJS)
