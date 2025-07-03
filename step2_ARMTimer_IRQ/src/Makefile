@@ -13,10 +13,10 @@ OBJS := $(CSRCS:.c=.o)
 
 all: kernel.img
 
-kernel.img: kernel.elf
+kernel.img: kernel7.elf
 	$(OBJCOPY) -O binary $< $@
 
-kernel.elf: start.o $(OBJS)
+kernel7.elf: start.o $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ start.o $(OBJS)
 
 start.o: start.S
