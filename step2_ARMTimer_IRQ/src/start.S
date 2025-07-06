@@ -1,12 +1,31 @@
 .section .text.boot
-.global _start
+.global __start
 .extern irq_handler
 
-_start:
-    // Initialize stack pointer for Supervisor mode
+.section .text
+.global __start
+
+__start:
+    mrs r0, cpsr
+    and r0, r0, #0x1F
+    cmp r0, #0x1A
+    bne __real_start
+
+    ldr r1, =__real_start 
+    msr ELR_hyp, r1
+
+    mrs r2, cpsr
+    bic r2, r2, #0x1F
+    orr r2, r2, #0x13 
+    msr SPSR_hyp, r2
+
+    eret    
+
+__real_start:
+    cpsid if
+
     ldr sp, =__stack_top
 
-    // Zero-initialize the .bss section
     ldr r0, =__bss_start
     ldr r1, =__bss_end
     mov r2, #0
@@ -16,7 +35,6 @@ _start:
     strlt r2, [r0], #4
     blt 1b
 
-    // Copy .data section from ROM to RAM
     ldr r0, =__rom_data
     ldr r1, =__data_start
     ldr r2, =__data_end
@@ -27,55 +45,44 @@ _start:
     strlt r3, [r1], #4
     blt 2b
 
-    // Switch to IRQ mode and set IRQ stack
-    mov r0, #0xD2              // CPSR: IRQ mode, FIQ/IRQ disabled
+    mov r0, #0xD2             
     msr cpsr_c, r0
     ldr sp, =__stack_top_irq
 
-    // Switch back to Supervisor (SVC) mode and reset SP
-    mov r0, #0xD3              // CPSR: SVC mode, FIQ/IRQ disabled
+    mov r0, #0xD3 
     msr cpsr_c, r0
     ldr sp, =__stack_top
 
-    // Set vector base address to our custom vector table
-    ldr r0, =vector_table
+    ldr r0, =__vector_table
     mcr p15, 0, r0, c12, c0, 0
 
-    // Enable IRQ (clear I bit in CPSR)
     mrs r0, cpsr
-    bic r0, r0, #0x80          // Clear bit 7 (I bit)
+    bic r0, r0, #0x80
     msr cpsr_c, r0
 
-    // Jump to C kernel entry point
     bl kernel_main
 
-3:  b 3b                      // Halt if returned unexpectedly
+3:  b 3b
 
-// ----------------------------------------------------------------------
-// Exception Vector Table (must be 32-byte aligned)
-// ----------------------------------------------------------------------
-.align 7
-.global vector_table
-vector_table:
-    ldr pc, =_start              // Reset
-    ldr pc, =hang                // Undefined Instruction
-    ldr pc, =hang                // Software Interrupt (SWI/SVC)
-    ldr pc, =hang                // Prefetch Abort
-    ldr pc, =hang                // Data Abort
-    ldr pc, =hang                // Reserved
-    ldr pc, =_irq_handler_entry  // IRQ
-    ldr pc, =hang                // FIQ
+.align 5
+.global __vector_table
+__vector_table:
+    b __start // Reset
+    b hang // Undefined
+    b hang // SVC
+    b hang // Prefetch Abort
+    b hang // Data Abort
+    b hang // Reserved
+    b __irq_handler_entry // IRQ
+    b hang // FIQ
 
-// Fallback infinite loop (used for unhandled exceptions)
 hang:
     b hang
 
-// ----------------------------------------------------------------------
-// IRQ handler wrapper (saves registers and jumps to C irq_handler)
-// ----------------------------------------------------------------------
-_irq_handler_entry:
-    sub lr, lr, #4              // Adjust LR to point to the interrupted instruction
-    stmfd sp!, {r0-r12, lr}     // Push all general-purpose registers + LR onto IRQ stack
-    bl irq_handler              // Call C interrupt handler
-    ldmfd sp!, {r0-r12, lr}     // Restore registers
-    subs pc, lr, #0             // Return from IRQ (restores CPSR from SPSR)
+__irq_handler_entry:
+    sub lr, lr, #4
+    stmfd sp!, {r0-r12, lr}
+    bl irq_handler
+    ldmfd sp!, {r0-r12, lr}
+    subs pc, lr, #0
+

@@ -2,8 +2,9 @@ CROSS    := arm-none-eabi-
 CC       := $(CROSS)gcc
 OBJCOPY  := $(CROSS)objcopy
 
-CFLAGS   := -march=armv6 -mfpu=vfp -mfloat-abi=hard \
+CFLAGS   := -mcpu=cortex-a7 -mfpu=vfp -mfloat-abi=hard \
             -nostdlib -nostartfiles -ffreestanding -O2
+			
 LDFLAGS  := -T linker.ld -Wl,--build-id=none
 
 CSRCS := main.c uart_driver.c gpio_driver.c irq.c
