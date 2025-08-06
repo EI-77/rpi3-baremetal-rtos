@@ -28,9 +28,7 @@ void timer_init(void) {
     disable_other_irqs();
 
     mmio_write(ARM_TIMER_LOAD, COUNT_PER_SEC);
-    mmio_write(ARM_TIMER_RELOAD, COUNT_PER_SEC);
-    mmio_write(ARM_TIMER_DIVIDER, 249);     
-    mmio_write(ARM_TIMER_IRQ_CLR, 1);       
+    mmio_write(ARM_TIMER_RELOAD, COUNT_PER_SEC);   
 
     mmio_write(ARM_TIMER_CONTROL,
         (1 << 7) |  // Timer Enable
