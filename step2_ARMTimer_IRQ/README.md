@@ -1,13 +1,11 @@
-# Step 2: ARM Timer Interrupt (WIP)
+# Step 2: ARM Timer Interrupt
 
 This step implements periodic interrupt handling using the **ARM Timer** on Raspberry Pi 3 Model B (AArch32).  
-⚠️ **Note:** This implementation is currently under debugging and may not behave as expected.
-
 ---
 
 ## Intended Behavior
 
-- The ARM Timer is configured to fire **every 0.5 seconds** (500,000 ticks at 1MHz).
+- The ARM Timer is configured to fire **every 1.0 seconds**.
 - When the timer interrupt fires:
   - The `irq_handler()` is invoked.
   - The handler sends a message via UART:  
@@ -18,17 +16,7 @@ This step implements periodic interrupt handling using the **ARM Timer** on Rasp
 
 ---
 
-## Known Issue (Under Debugging)
-
-- The timer initialization seems to complete (confirmed via UART).
-- However, the `irq_handler()` is **not being called**.
-- Personal hypothesis:  
-  The issue may be related to **incorrect IRQ stack setup** in `start.S`.
-
----
-
 ## How to View UART Output
-> ⚠️ **Note:** As of now, no UART output is displayed after boot.  
 
 Use a serial terminal such as **Tera Term** on your PC to observe the UART output.
 
